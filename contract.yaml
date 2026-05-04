@@ -10,7 +10,8 @@ owner: dpf-team
 
 servers:
   - id: local-postgres
-    server: "localhost:5432"
+    host: localhost
+    port: 5432
     type: postgresql
     database: dpf
     schema: sales_orders_v1
