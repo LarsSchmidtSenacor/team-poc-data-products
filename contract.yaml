@@ -7,7 +7,6 @@ domain: sales
 dataProduct: sales-orders
 description:
   purpose: Source-aligned data product for sales order transactions
-owner: dpf-team
 
 servers:
   - server: local-postgres
@@ -16,7 +15,6 @@ servers:
     type: postgresql
     database: dpf
     schema: sales_orders_v1
-    environment: production
 
 schema:
   - id: sales_orders
@@ -34,20 +32,17 @@ schema:
         logicalType: number
         physicalType: decimal(10,2)
         description: Order amount in EUR
+        quality:
+          - type: library
+            metric: invalidValues
+            description: No negative amounts allowed
+            mustBe: 0
+            dimension: accuracy
+            severity: error
       - name: created_at
         logicalType: timestamp
         physicalType: timestamp
         description: Order creation timestamp
-
-quality:
-  - id: no-negative-amounts
-    type: library
-    metric: invalidValues
-    description: No negative amounts allowed
-    element: sales_orders.amount
-    mustBe: 0
-    dimension: accuracy
-    severity: error
 
 slaProperties:
   - property: latency
