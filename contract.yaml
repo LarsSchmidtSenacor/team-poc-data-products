@@ -11,7 +11,7 @@ owner: dpf-team
 servers:
   - id: local-postgres
     server: "localhost:5432"
-    type: PostgreSQL
+    type: postgresql
     database: dpf
     schema: sales_orders_v1
     environment: production
