@@ -2,7 +2,7 @@ name: DPF Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   lint:
