@@ -5,12 +5,12 @@ version: 1.0.0
 status: active
 domain: sales
 dataProduct: sales-orders
-description: Source-aligned data product for sales order transactions
+description:
+  purpose: Source-aligned data product for sales order transactions
 owner: dpf-team
 
 servers:
-  - id: local-postgres
-    server: localhost
+  - server: local-postgres
     host: localhost
     port: 5432
     type: postgresql
@@ -21,33 +21,39 @@ servers:
 schema:
   - id: sales_orders
     name: sales_orders
-    type: table
+    physicalType: table
     description: Raw sales order transactions
     properties:
       - name: id
-        type: integer
+        logicalType: integer
+        physicalType: integer
         description: Order identifier
+        primaryKey: true
         primaryKeyPosition: 1
       - name: amount
-        type: number
+        logicalType: number
+        physicalType: decimal(10,2)
         description: Order amount in EUR
       - name: created_at
-        type: timestamp
+        logicalType: timestamp
+        physicalType: timestamp
         description: Order creation timestamp
 
 quality:
   - id: no-negative-amounts
-    type: sql
+    type: library
+    metric: invalidValues
     description: No negative amounts allowed
-    property: invalidValues
     element: sales_orders.amount
     mustBe: 0
+    dimension: accuracy
+    severity: error
 
 slaProperties:
   - property: latency
     value: 1
-    unit: day
+    unit: d
     description: Data refreshed daily
   - property: retention
     value: 3
-    unit: years
+    unit: y
