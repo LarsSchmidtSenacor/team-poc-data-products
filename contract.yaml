@@ -1,44 +1,51 @@
-dataContractSpecification: 0.9.3
-id: sales_orders_v1
-info:
-  title: Sales Orders
-  version: v1
-  description: Source-aligned data product for sales orders
-  owner: team-poc
-  contact:
-    name: DPF Team
+apiVersion: v3.1.0
+kind: DataContract
+id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+version: 1.0.0
+status: active
+domain: sales
+dataProduct: sales-orders
+description: Source-aligned data product for sales order transactions
+owner: dpf-team
+
 servers:
-  production:
-    type: postgres
-    host: localhost
-    port: 5432
+  - id: local-postgres
+    server: "localhost:5432"
+    type: PostgreSQL
     database: dpf
     schema: sales_orders_v1
-models:
-  sales_orders:
-    description: Raw sales order transactions
+    environment: production
+
+schema:
+  - id: sales_orders
+    name: sales_orders
     type: table
-    fields:
-      id:
+    description: Raw sales order transactions
+    properties:
+      - name: id
         type: integer
-        required: true
-        unique: true
         description: Order identifier
-      amount:
-        type: decimal
-        required: true
+        primaryKeyPosition: 1
+      - name: amount
+        type: number
         description: Order amount in EUR
-      created_at:
+      - name: created_at
         type: timestamp
-        required: true
         description: Order creation timestamp
+
 quality:
-  - type: sql
-    description: No negative amounts
-    query: SELECT COUNT(*) FROM sales_orders WHERE amount < 0
+  - id: no-negative-amounts
+    type: sql
+    description: No negative amounts allowed
+    property: invalidValues
+    element: sales_orders.amount
     mustBe: 0
+
 slaProperties:
-  - property: freshness
-    value: daily
+  - property: latency
+    value: 1
+    unit: day
+    description: Data refreshed daily
   - property: retention
-    value: 3 years
+    value: 3
+    unit: years
